@@ -19,11 +19,11 @@ router.get('/', (req, res) => {
 // 📌 Crear una nueva reserva
 router.post('/', (req, res) => {
     const { nombre, apellido, fecha, hora } = req.body;
-
+  
     if (!nombre || !apellido || !fecha || !hora) {
-        return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+      return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
-
+  
     let workbook, sheet, data = [];
     if (fs.existsSync(FILE_PATH)) {
         workbook = XLSX.readFile(FILE_PATH);
@@ -32,15 +32,16 @@ router.post('/', (req, res) => {
     } else {
         workbook = XLSX.utils.book_new();
     }
-
+  
     data.push({ ID: data.length + 1, Nombre: nombre, Apellido: apellido, Fecha: fecha, Hora: hora });
-
+  
     sheet = XLSX.utils.json_to_sheet(data);
     XLSX.utils.book_append_sheet(workbook, sheet, 'Reservas');
     XLSX.writeFile(workbook, FILE_PATH);
-
-    res.json({ message: 'Reserva creada con éxito', reserva: data });
-});
+  
+    res.json(data);  // Devuelve los datos actualizados
+  });
+  
 
 // 📌 Editar una reserva
 router.put('/:id', (req, res) => {

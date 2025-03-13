@@ -1,13 +1,27 @@
 import { Component } from '@angular/core';
+import { ApiService } from '../../services/api.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule],
+  providers: [ApiService],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {
+  reservations: any[] = [];
+  newReservation = { nombre: '', apellido: '', fecha: '', hora: '' };
+
+  constructor(
+    private api: ApiService // private router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.getReservations();
+  }
 
   /* 
     TO DO:
@@ -16,7 +30,6 @@ export class HomeComponent {
       * Editar row en excel haciendo un update a api sheet
       * Eliminar row en excel haciendo delete a api sheet 
   */
-
 
   /*
   ✔ Frontend en Netlify (gratis y rápido).
@@ -37,7 +50,38 @@ export class HomeComponent {
   Render asignará una URL como https://mi-api.onrender.com.
   Actualizar Angular con la nueva URL del backend.
   */
-  createBooking(){
-    console.log("reservar");
+
+  getReservations() {
+    this.api.getReservations().subscribe({
+      next: (data) => {
+        console.log(data);
+        this.reservations = data;
+      },
+      error: (err) => {
+        console.error('Error obteniendo reservas', err);
+      },
+    });
+  }
+  createBooking() {
+    if (
+      !this.newReservation.nombre ||
+      !this.newReservation.apellido ||
+      !this.newReservation.fecha ||
+      !this.newReservation.hora
+    ) {
+      console.warn('Faltan datos para la reserva');
+      return;
+    }
+
+    this.api.createReservation(this.newReservation).subscribe({
+      next: (res) => {
+        console.log('Reserva creada:', res);
+        this.getReservations(); // Refrescar la lista de reservas
+        this.newReservation = { nombre: '', apellido: '', fecha: '', hora: '' }; // Resetear formulario
+      },
+      error: (err) => {
+        console.error('Error creando reserva', err);
+      },
+    });
   }
 }

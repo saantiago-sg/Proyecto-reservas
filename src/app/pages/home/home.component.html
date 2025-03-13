@@ -2,18 +2,42 @@
 
 
 <H3>Crear reserva</H3>
-<form>
+<form (submit)="createBooking()">
     <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" required>
+    <input type="text" id="nombre" name="nombre" [(ngModel)]="newReservation.nombre" required />
 
     <label for="apellido">Apellido:</label>
-    <input type="text" id="apellido" name="apellido" required>
-
-    <label for="fecha">Fecha:</label>
-    <input type="date" id="fecha" name="fecha" required>
+    <input type="text" id="apellido" name="apellido" [(ngModel)]="newReservation.apellido" required />
 
     <label for="hora">Hora:</label>
-    <input type="time" id="hora" name="hora" required>
+    <input type="time" id="hora" name="hora" [(ngModel)]="newReservation.hora" required />
 
-    <button type="submit" (click)="createBooking()">Enviar</button>
+
+    <label for="fecha">Fecha:</label>
+    <input type="date" id="fecha" name="fecha" [(ngModel)]="newReservation.fecha" required />
+
+    <button type="submit">Reservar</button>
 </form>
+
+
+
+
+
+<hr>
+<h2>Reservas</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let reserva of reservations">
+            <td>{{ reserva.id }}</td>
+            <td>{{ reserva.nombre }}</td>
+            <td>{{ reserva.fecha }}</td>
+        </tr>
+    </tbody>
+</table>
